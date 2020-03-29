@@ -1,0 +1,41 @@
+<head>
+  <title>Sketch Pad</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <button id="clear-action">Clear</button>
+    <div id="grid">
+    </div>
+    <script>
+        let clearBtn = document.getElementById('clear-action');
+        clearBtn.addEventListener('click', resetGrid);
+
+        function resetGrid()
+        {
+          let grid = document.getElementById('grid');
+          grid.textContent = '';
+          
+          const gridSize = prompt('How many squares by side?');
+          createGrid(gridSize);
+        }
+        
+        function createGrid(length)
+        {
+          let grid = document.getElementById('grid');
+          const squareCount = length*length;
+          console.log('length:' + length);
+          console.log('squareCount:' + squareCount);
+          for (let i = 0; i < squareCount; ++i) {
+            let square = document.createElement('div');
+            square.id = 'square';
+            grid.appendChild(square); 
+          }
+
+          // update css grid layout
+          const param = `repeat(${length}, 1fr)`;
+          grid.style.gridTemplateColumns = param;
+          grid.style.gridTemplateRows = param;
+        }        
+        createGrid(4);
+    </script>
+</body>

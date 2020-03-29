@@ -1,0 +1,29 @@
+html {
+  height: 100%;
+}
+
+button#clear {
+  margin: 0;
+}
+
+#grid {
+  margin: auto;
+  width: 600px;
+  height: 600px;
+  display: grid;
+  /*grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);*/
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+#square {
+  margin: 0px;
+  border-color:grey;
+  border-width: 1px;
+  border-style: solid;
+}
+
+#square:hover {
+  background-color: black;
+}
