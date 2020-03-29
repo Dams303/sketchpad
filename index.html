@@ -10,9 +10,29 @@
     <script>
         const DEFAULT_GRID_WIDTH = 64;
         const UNDRAWNED = 'white';
-        const DRAWNED = 'black';
-        const OPACITY_START = '0.1';
+        const DRAWNED = 'hsla(0, 0%, 0%, 0.1)'; //black;
         
+        function getAlphaFromHSLA(hsla) {
+           console.log('getAlphaFromHSLA: '+ hsla );
+           const array = hsla.split(',');
+           
+           if (array.length < 4) // rgb/hsl format, it means alpha equal 1
+             return 1.0;
+          else 
+           return parseFloat(array[3].replace(')',''));
+        }
+
+        function applyAlphaOnHSLA(hsla, alpha) {
+          console.log('getAlphaFromHSLA: '+ hsla );
+          let array = hsla.split(',');
+          if(array.length < 3)
+            console.log('array length error:' + array);
+          array[3] = ' ' + alpha + ')';
+          const newHSLA = array.join(',');
+          console.log('newHSLA: '+ newHSLA );
+          return newHSLA;
+        }
+
         let isColorMode = true;
         
         let clearBtn = document.getElementById('clear-action');
@@ -40,7 +60,7 @@
         function getSquareColor() {
           if (isColorMode) {
             const hue = Math.floor(Math.random() * 255);
-            return `hsl(${hue}, 80%, 80%)`;
+            return `hsla(${hue}, 80%, 80%, 0.1)`;
           }
           else
             return DRAWNED;
@@ -48,12 +68,15 @@
 
         function drawSquare() {
           if (this.style.backgroundColor == UNDRAWNED) {
-            console.log('add color');
             this.style.backgroundColor = getSquareColor(); 
           }
-          else if (this.style.background.opacity < 1) {  
-            this.style.background.opacity = 0.1 + parseFloat(this.style.background.opacity);
-            console.log('op: ' + this.style.background.opacity);
+          else { 
+            let alpha = getAlphaFromHSLA(this.style.backgroundColor);
+            if (alpha < 1) 
+            {   
+              const hsla = applyAlphaOnHSLA(this.style.backgroundColor, alpha+0.1);
+              this.style.backgroundColor = hsla;
+            }
           }
         }
         
@@ -66,7 +89,7 @@
             let square = document.createElement('div');
             square.classList.add('square');
             square.style.backgroundColor = UNDRAWNED;
-            square.style.background.opacity = 0;//OPACITY_START;
+            //square.style.background.opacity = 0;//OPACITY_START;
             square.addEventListener('mouseover', drawSquare);
             grid.appendChild(square); 
           }
