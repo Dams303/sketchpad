@@ -1,5 +1,6 @@
 html {
   height: 100%;
+  background:white;
 }
 
 button#clear {
@@ -7,23 +8,30 @@ button#clear {
 }
 
 #grid {
+  background-color: white;
   margin: auto;
-  width: 600px;
+  width: 599px;
   height: 600px;
   display: grid;
-  /*grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(4, 1fr);*/
   grid-column-gap: 0px;
   grid-row-gap: 0px;
-}
-
-#square {
-  margin: 0px;
-  border-color:grey;
-  border-width: 1px;
   border-style: solid;
+  border-color: black;
+  border-left-width: 0;
+  border-top-width: 0;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
 }
 
-#square:hover {
-  background-color: black;
+
+.square {
+  margin: 0px;
+  /*border-color: #e6e6e6;*/
+  border-color: black;
+  border-bottom-width: 0;
+  border-right-width: 0;
+  border-top-width: 1px;
+  border-left-width: 1px;
+  
+  border-style: solid;
 }

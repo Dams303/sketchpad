@@ -4,30 +4,70 @@
 </head>
 <body>
     <button id="clear-action">Clear</button>
+    <button id="color-mode">Color</button>
     <div id="grid">
     </div>
     <script>
+        const DEFAULT_GRID_WIDTH = 64;
+        const UNDRAWNED = 'white';
+        const DRAWNED = 'black';
+        const OPACITY_START = '0.1';
+        
+        let isColorMode = true;
+        
         let clearBtn = document.getElementById('clear-action');
         clearBtn.addEventListener('click', resetGrid);
 
-        function resetGrid()
-        {
+        let colorBtn = document.getElementById('color-mode');
+        colorBtn.addEventListener('click', () => isColorMode = !isColorMode);  
+
+        function resetGrid() {
           let grid = document.getElementById('grid');
           grid.textContent = '';
           
-          const gridSize = prompt('How many squares by side?');
-          createGrid(gridSize);
+          const length = getGridLength();
+          createGrid(length);
+        }
+        
+        function getGridLength() {
+          const length = prompt('How many squares by side?');
+          if (length > 0 && length < 100)
+            return length;
+          else 
+            return DEFAULT_GRID_WIDTH;
+        }
+
+        function getSquareColor() {
+          if (isColorMode) {
+            const hue = Math.floor(Math.random() * 255);
+            return `hsl(${hue}, 80%, 80%)`;
+          }
+          else
+            return DRAWNED;
+        }
+
+        function drawSquare() {
+          if (this.style.backgroundColor == UNDRAWNED) {
+            console.log('add color');
+            this.style.backgroundColor = getSquareColor(); 
+          }
+          else if (this.style.background.opacity < 1) {  
+            this.style.background.opacity = 0.1 + parseFloat(this.style.background.opacity);
+            console.log('op: ' + this.style.background.opacity);
+          }
         }
         
         function createGrid(length)
         {
           let grid = document.getElementById('grid');
           const squareCount = length*length;
-          console.log('length:' + length);
-          console.log('squareCount:' + squareCount);
+
           for (let i = 0; i < squareCount; ++i) {
             let square = document.createElement('div');
-            square.id = 'square';
+            square.classList.add('square');
+            square.style.backgroundColor = UNDRAWNED;
+            square.style.background.opacity = 0;//OPACITY_START;
+            square.addEventListener('mouseover', drawSquare);
             grid.appendChild(square); 
           }
 
@@ -36,6 +76,6 @@
           grid.style.gridTemplateColumns = param;
           grid.style.gridTemplateRows = param;
         }        
-        createGrid(4);
+        createGrid(DEFAULT_GRID_WIDTH);  
     </script>
 </body>
