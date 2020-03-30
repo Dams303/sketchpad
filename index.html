@@ -2,104 +2,107 @@
   <title>Sketch Pad</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <button id="clear-action">Clear</button>
-    <button id="color-mode">Color</button>
-    <button id="opacity-mode">Opacity</button>
-    <div id="grid">
+  <div id="container">
+    <h2>Etch-A-Sketch</h2>  
+    <div id="controls"> 
+      <button id="clear-action">Clear</button>
+      <input type="checkbox" id="color-mode" name="color" checked>
+      <label for="color-mode">Color</label>
+      <input type="checkbox" id="opacity-mode" name="opacity">
+      <label for="opacity-mode">Opacity</label>
     </div>
-    <script>
-        const DEFAULT_GRID_WIDTH = 64;
-        const UNDRAWNED = 'white';
+    <div id="grid"></div>
+  <div>
+  <script>
+    const DEFAULT_GRID_WIDTH = 64;
+    const UNDRAWNED = 'white';
 
-        let isColorMode = true;
-        let isOpacityMode = true;
-        
-        function getAlphaFromHSLA(hsla) {
-           const array = hsla.split(',');
-           
-           if (array.length < 4) // rgb/hsl format, it means alpha equal 1
-             return 1.0;
-          else 
-           return parseFloat(array[3].replace(')',''));
+    let isColorMode = true;
+    let isOpacityMode = false;
+
+    let clearBtn = document.getElementById('clear-action');
+    clearBtn.addEventListener('click', resetGrid);
+
+    let colorChkBox = document.getElementById('color-mode');
+    colorChkBox.addEventListener('change', (e) => isColorMode = e.target.checked);
+    let opacityChkBox = document.getElementById('opacity-mode');
+    opacityChkBox.addEventListener('change', (e) => isOpacityMode = e.target.checked);
+  
+    function getAlphaFromHSLA(hsla) {
+      const array = hsla.split(',');
+
+      if (array.length < 4) // rgb/hsl format, it means alpha equal 1
+        return 1.0;
+      else
+        return parseFloat(array[3].replace(')', ''));
+    }
+
+    function applyAlphaOnHSLA(hsla, alpha) {
+      let array = hsla.split(',');
+      array[3] = ' ' + alpha + ')';
+      return array.join(',');
+    }
+
+    function resetGrid() {
+      let grid = document.getElementById('grid');
+      grid.textContent = '';
+
+      const length = getGridLength();
+      createGrid(length);
+    }
+
+    function getGridLength() {
+      const length = prompt('Enter canvas width:', DEFAULT_GRID_WIDTH);
+      if (length > 0 && length < 100)
+        return length;
+      else
+        return DEFAULT_GRID_WIDTH;
+    }
+
+    function getSquareColor() {
+      const alpha = isOpacityMode ? 0.1 : 1;
+
+      if (isColorMode) {
+        const hue = Math.floor(Math.random() * 255);
+
+        return `hsla(${hue}, 80%, 80%, ${alpha})`;
+      }
+      else
+        return `hsla(0, 0%, 0%, ${alpha})`;
+    }
+
+    function drawSquare() {
+      if (this.style.backgroundColor == UNDRAWNED) {
+        this.style.backgroundColor = getSquareColor();
+      }
+      else if (isOpacityMode) {
+        let alpha = getAlphaFromHSLA(this.style.backgroundColor);
+        if (alpha < 1) {
+          const hsla = applyAlphaOnHSLA(this.style.backgroundColor, alpha + 0.1);
+          this.style.backgroundColor = hsla;
         }
+      }
+    }
 
-        function applyAlphaOnHSLA(hsla, alpha) {
-          let array = hsla.split(',');
-          array[3] = ' ' + alpha + ')';
-          return array.join(',');
-        }
-        
-        let clearBtn = document.getElementById('clear-action');
-        clearBtn.addEventListener('click', resetGrid);
+    function createGrid(length) {
+      let grid = document.getElementById('grid');
+      const squareCount = length * length;
 
-        let colorBtn = document.getElementById('color-mode');
-        colorBtn.addEventListener('click', () => isColorMode = !isColorMode);  
-        
-        let opacityBtn = document.getElementById('opacity-mode');
-        opacityBtn.addEventListener('click', () => isOpacityMode = !isOpacityMode);  
+      for (let i = 0; i < squareCount; ++i) {
+        let square = document.createElement('div');
+        square.classList.add('square');
+        square.style.backgroundColor = UNDRAWNED;
+        square.addEventListener('mouseover', drawSquare);
+        grid.appendChild(square);
+      }
 
-        function resetGrid() {
-          let grid = document.getElementById('grid');
-          grid.textContent = '';
-          
-          const length = getGridLength();
-          createGrid(length);
-        }
-        
-        function getGridLength() {
-          const length = prompt('How many squares by side?');
-          if (length > 0 && length < 100)
-            return length;
-          else 
-            return DEFAULT_GRID_WIDTH;
-        }
-
-        function getSquareColor() {
-          const alpha = isOpacityMode? 0.1 : 1;
-          
-          if (isColorMode) {
-            const hue = Math.floor(Math.random() * 255);
-            
-            return `hsla(${hue}, 80%, 80%, ${alpha})`;
-          }
-          else
-            return `hsla(0, 0%, 0%, ${alpha})`;
-        }
-
-        function drawSquare() {
-          if (this.style.backgroundColor == UNDRAWNED) {
-            this.style.backgroundColor = getSquareColor(); 
-          }
-          else if(isOpacityMode) { 
-            let alpha = getAlphaFromHSLA(this.style.backgroundColor);
-            if (alpha < 1) 
-            {   
-              const hsla = applyAlphaOnHSLA(this.style.backgroundColor, alpha+0.1);
-              this.style.backgroundColor = hsla;
-            }
-          }
-        }
-        
-        function createGrid(length)
-        {
-          let grid = document.getElementById('grid');
-          const squareCount = length*length;
-
-          for (let i = 0; i < squareCount; ++i) {
-            let square = document.createElement('div');
-            square.classList.add('square');
-            square.style.backgroundColor = UNDRAWNED;
-            //square.style.background.opacity = 0;//OPACITY_START;
-            square.addEventListener('mouseover', drawSquare);
-            grid.appendChild(square); 
-          }
-
-          // update css grid layout
-          const param = `repeat(${length}, 1fr)`;
-          grid.style.gridTemplateColumns = param;
-          grid.style.gridTemplateRows = param;
-        }        
-        createGrid(DEFAULT_GRID_WIDTH);  
-    </script>
+      // update css grid layout
+      const param = `repeat(${length}, 1fr)`;
+      grid.style.gridTemplateColumns = param;
+      grid.style.gridTemplateRows = param;
+    }
+    createGrid(DEFAULT_GRID_WIDTH);  
+  </script>
 </body>

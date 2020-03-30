@@ -1,13 +1,37 @@
 html {
   height: 100%;
   background:white;
+  
 }
 
 button#clear {
   margin: 0;
 }
 
+label {
+  font: 400 11px system-ui;
+}
+
+#container {
+  margin: auto;
+  width: 600px;   
+}
+
+h2 {
+  margin-top: 14px;
+  margin-bottom: 14px;
+  text-align: center;
+  font: 400 28px system-ui;
+}
+
+#controls {
+  margin-top: 12px;
+  margin-bottom: 7px;
+}
+
 #grid {
+  --grid-color: black;
+  /*--grid-color: #e6e6e6;*/
   background-color: white;
   margin: auto;
   width: 599px;
@@ -16,7 +40,7 @@ button#clear {
   grid-column-gap: 0px;
   grid-row-gap: 0px;
   border-style: solid;
-  border-color: black;
+  border-color: var(--grid-color);
   border-left-width: 0;
   border-top-width: 0;
   border-right-width: 1px;
@@ -26,8 +50,7 @@ button#clear {
 
 .square {
   margin: 0px;
-  /*border-color: #e6e6e6;*/
-  border-color: black;
+  border-color: var(--grid-color);
   border-bottom-width: 0;
   border-right-width: 0;
   border-top-width: 1px;
