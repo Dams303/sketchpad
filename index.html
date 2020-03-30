@@ -5,15 +5,17 @@
 <body>
     <button id="clear-action">Clear</button>
     <button id="color-mode">Color</button>
+    <button id="opacity-mode">Opacity</button>
     <div id="grid">
     </div>
     <script>
         const DEFAULT_GRID_WIDTH = 64;
         const UNDRAWNED = 'white';
-        const DRAWNED = 'hsla(0, 0%, 0%, 0.1)'; //black;
+
+        let isColorMode = true;
+        let isOpacityMode = true;
         
         function getAlphaFromHSLA(hsla) {
-           console.log('getAlphaFromHSLA: '+ hsla );
            const array = hsla.split(',');
            
            if (array.length < 4) // rgb/hsl format, it means alpha equal 1
@@ -23,23 +25,19 @@
         }
 
         function applyAlphaOnHSLA(hsla, alpha) {
-          console.log('getAlphaFromHSLA: '+ hsla );
           let array = hsla.split(',');
-          if(array.length < 3)
-            console.log('array length error:' + array);
           array[3] = ' ' + alpha + ')';
-          const newHSLA = array.join(',');
-          console.log('newHSLA: '+ newHSLA );
-          return newHSLA;
+          return array.join(',');
         }
-
-        let isColorMode = true;
         
         let clearBtn = document.getElementById('clear-action');
         clearBtn.addEventListener('click', resetGrid);
 
         let colorBtn = document.getElementById('color-mode');
         colorBtn.addEventListener('click', () => isColorMode = !isColorMode);  
+        
+        let opacityBtn = document.getElementById('opacity-mode');
+        opacityBtn.addEventListener('click', () => isOpacityMode = !isOpacityMode);  
 
         function resetGrid() {
           let grid = document.getElementById('grid');
@@ -58,19 +56,22 @@
         }
 
         function getSquareColor() {
+          const alpha = isOpacityMode? 0.1 : 1;
+          
           if (isColorMode) {
             const hue = Math.floor(Math.random() * 255);
-            return `hsla(${hue}, 80%, 80%, 0.1)`;
+            
+            return `hsla(${hue}, 80%, 80%, ${alpha})`;
           }
           else
-            return DRAWNED;
+            return `hsla(0, 0%, 0%, ${alpha})`;
         }
 
         function drawSquare() {
           if (this.style.backgroundColor == UNDRAWNED) {
             this.style.backgroundColor = getSquareColor(); 
           }
-          else { 
+          else if(isOpacityMode) { 
             let alpha = getAlphaFromHSLA(this.style.backgroundColor);
             if (alpha < 1) 
             {   
