@@ -46,16 +46,18 @@
     }
 
     function resetGrid() {
+      const length = getGridLength();
+      if(length == null) return;
       let grid = document.getElementById('grid');
       grid.textContent = '';
-
-      const length = getGridLength();
       createGrid(length);
     }
 
     function getGridLength() {
       const length = prompt('Enter canvas width:', DEFAULT_GRID_WIDTH);
-      if (length > 0 && length < 100)
+      if (length == null)
+        return null;
+      else if (length > 0 && length < 100)
         return length;
       else
         return DEFAULT_GRID_WIDTH;
@@ -65,7 +67,7 @@
       const alpha = isOpacityMode ? 0.1 : 1;
 
       if (isColorMode) {
-        const hue = Math.floor(Math.random() * 255);
+        const hue = Math.floor(Math.random() * 360);
 
         return `hsla(${hue}, 80%, 80%, ${alpha})`;
       }
