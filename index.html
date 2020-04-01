@@ -33,7 +33,7 @@
     function getAlphaFromHSLA(hsla) {
       const array = hsla.split(',');
 
-      if (array.length < 4) // rgb/hsl format, it means alpha equal 1
+      if (array.length < 4) //means hsl/rgb with implicite alpha equal to 1.0
         return 1.0;
       else
         return parseFloat(array[3].replace(')', ''));
@@ -46,24 +46,24 @@
     }
 
     function resetGrid() {
-      const length = getGridLength();
+      const length = queryGridLength();
       if(length == null) return;
       let grid = document.getElementById('grid');
       grid.textContent = '';
       createGrid(length);
     }
 
-    function getGridLength() {
+    function queryGridLength() {
       const length = prompt('Enter canvas width:', DEFAULT_GRID_WIDTH);
       if (length == null)
         return null;
-      else if (length > 0 && length < 100)
+      else if (length > 0 && length <= 100)
         return length;
       else
         return DEFAULT_GRID_WIDTH;
     }
 
-    function getSquareColor() {
+    function getCellColor() {
       const alpha = isOpacityMode ? 0.1 : 1;
 
       if (isColorMode) {
@@ -75,9 +75,9 @@
         return `hsla(0, 0%, 0%, ${alpha})`;
     }
 
-    function drawSquare() {
+    function drawCell() {
       if (this.style.backgroundColor == UNDRAWNED) {
-        this.style.backgroundColor = getSquareColor();
+        this.style.backgroundColor = getCellColor();
       }
       else if (isOpacityMode) {
         let alpha = getAlphaFromHSLA(this.style.backgroundColor);
@@ -90,14 +90,14 @@
 
     function createGrid(length) {
       let grid = document.getElementById('grid');
-      const squareCount = length * length;
+      const cellsCount = length * length;
 
-      for (let i = 0; i < squareCount; ++i) {
-        let square = document.createElement('div');
-        square.classList.add('square');
-        square.style.backgroundColor = UNDRAWNED;
-        square.addEventListener('mouseover', drawSquare);
-        grid.appendChild(square);
+      for (let i = 0; i < cellsCount; ++i) {
+        let cell = document.createElement('div');
+        cell.classList.add('cell');
+        cell.style.backgroundColor = UNDRAWNED;
+        cell.addEventListener('mouseover', drawCell);
+        grid.appendChild(cell);
       }
 
       // update css grid layout

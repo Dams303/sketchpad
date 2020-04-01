@@ -31,7 +31,7 @@ h2 {
 
 #grid {
   --grid-color: black;
-  /*--grid-color: #e6e6e6;*/
+  --grid-color: #e6e6e6;
   background-color: white;
   margin: auto;
   width: 599px;
@@ -48,13 +48,12 @@ h2 {
 }
 
 
-.square {
+.cell {
   margin: 0px;
   border-color: var(--grid-color);
   border-bottom-width: 0;
   border-right-width: 0;
   border-top-width: 1px;
   border-left-width: 1px;
-  
   border-style: solid;
 }
